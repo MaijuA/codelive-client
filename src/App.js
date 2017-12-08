@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import SockJS from 'sockjs-client';
 import FileSaver from './FileSaver';
 
+
 class App extends Component {
     state = {content: ''};
 
@@ -78,10 +79,10 @@ class App extends Component {
     };
 
     /*
-    Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
-    on tyypin lisäksi ainoastaan tiedostonimi (filename).
+     Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
+     on tyypin lisäksi ainoastaan tiedostonimi (filename).
 
-    NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
+     NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
      */
     sendName = (filename) => {
         this.stompClient.send("/send", {}, JSON.stringify({
@@ -106,9 +107,9 @@ class App extends Component {
     };
 
     /*
-    Ylläoleva funktio handleTyping ei käsittele kaikkia merkkejä. Miksi? Älä kysy.
-    Funktio onKeyDown käsittelee loput näppäinpainallukset. Backspace poistaa
-    kursoria edeltävän merkin ja delete kursorin jälkeisen merkin.
+     Ylläoleva funktio handleTyping ei käsittele kaikkia merkkejä. Miksi? Älä kysy.
+     Funktio onKeyDown käsittelee loput näppäinpainallukset. Backspace poistaa
+     kursoria edeltävän merkin ja delete kursorin jälkeisen merkin.
      */
     onKeyDown = (event) => {
         // Handle backspace (8) and delete (46)
@@ -132,19 +133,24 @@ class App extends Component {
     }
 
     /*
-    Funktio onPaste hoitaa toiminnallisuuden, kun käyttäjä käyttää järjestelmän oletusarvoista
-    liittämistoimintoa (esim. Windowsissa Ctrl-V).
+     Funktio onPaste hoitaa toiminnallisuuden, kun käyttäjä käyttää järjestelmän oletusarvoista
+     liittämistoimintoa (esim. Windowsissa Ctrl-V).
      */
     onPaste = (event) => {
         this.sendDelta(event.clipboardData.getData('text/plain'), event.target.selectionStart, event.target.selectionEnd);
     };
 
     /*
-    Funktio onCut hoitaa toiminnallisuuden, kun käyttäjä käyttää järjestelmän oletusarvoista
-    leikkaustoimintoa (esim. Windowsissa Ctrl-X).
+     Funktio onCut hoitaa toiminnallisuuden, kun käyttäjä käyttää järjestelmän oletusarvoista
+     leikkaustoimintoa (esim. Windowsissa Ctrl-X).
      */
     onCut = (event) => {
         this.sendDelta('', event.target.selectionStart, event.target.selectionEnd);
+    }
+
+    copyToClipboard = (event) => {
+        document.querySelector("#live_editori").select();
+        document.execCommand('copy');
     }
 
 
@@ -166,7 +172,9 @@ class App extends Component {
                                           value={this.state.content}
                                 ></textarea>
                                 <FileSaver filename={this.state.filename} changeNameCallback={this.changeName}/>
-
+                                <img id="copyToClipboardIcon"
+                                     src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
+                                     onClick={this.copyToClipboard}/>
                             </div>
 
                         </fieldset>
