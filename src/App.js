@@ -44,7 +44,7 @@ class App extends Component {
         if (message.type === 'FULL') {
             newState = {content: message.content, filename: message.filename};
         } else if (message.type === 'NAME') {
-            newState = {filename: message.content};
+            newState = {filename: message.filename};
         } else {
             newState = {
                 content: this.state.content.substring(0, message.startPos) +
