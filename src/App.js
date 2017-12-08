@@ -37,6 +37,10 @@ class App extends Component {
 
     /*
      Funktio onMessageReceived ajetaan, kun websocket tuuppaa käyttäjälle viestin.
+     Mahdolliset viestin tyypit ovat FULL, NAME ja DELTA. "FULL" lähetetään käyttäjälle
+     kun hän kirjautuu sisään kanavalle. Viesti sisältää tekstirungon ja tiedostonimen.
+     "NAME" lähetetään, kun tiedostonimi on päivitetty. "DELTA" lähetetään kun tekstikentän
+     arvo on muuttunut.
      */
     onMessageReceived = (payload) => {
         var message = JSON.parse(payload.body);
@@ -56,7 +60,7 @@ class App extends Component {
     }
 
     /*
-     Funktio sendDelta lähettää tyyppiä DELTA muotoisen viestin. Tämänmuotoisissa viesteissä
+     Funktio sendDelta lähettää tyyppiä DELTA olevan viestin. Tämänmuotoisissa viesteissä
      on sisältö (content), joka liitetään osaksi olemassaolevaa tekstiä. Lisäksi viestissä
      tulee olla alkukoordinaatti (startPos) ja loppukoordinaatti(endPos), jotka kertovat,
      mihibn kohtaan olemassaolevaa tekstiä muutos tehdään.
@@ -71,6 +75,19 @@ class App extends Component {
             endPos: endPos,
             content: content
         }));
+    };
+
+    /*
+    Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
+    on tyypin lisäksi ainoastaan tiedostonimi (filename).
+
+    NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
+     */
+    sendName = (filename) => {
+        this.stompClient.send("/send", {}, JSON.stringify({
+            type: 'NAME',
+            filename: filename
+        }));
     }
 
     /*
@@ -80,55 +97,54 @@ class App extends Component {
      käytännön mukaisesti ylikirjoitetaan.
      */
     handleTyping = (event) => {
-        this.sendDelta(event.key, event.target.selectionStart, event.target.selectionEnd);
+        if (event.charCode == 13) {
+            // Jos painettu näppäin on Enter
+            this.sendDelta("\n", event.target.selectionStart, event.target.selectionEnd);
+        } else {
+            this.sendDelta(event.key, event.target.selectionStart, event.target.selectionEnd);
+        }
     };
 
     /*
-    Ylläoleva funktio handleTyping käsittelee ainoastaan tulostettavia merkkejä tuottavat
-    näppäinpainallukset. Funktio delete käsittelee poistonäppäimet backspace ja delete.
-    Backspace poistaa kursoria edeltävän merkin ja delete kursorin jälkeisen merkin.
+    Ylläoleva funktio handleTyping ei käsittele kaikkia merkkejä. Miksi? Älä kysy.
+    Funktio onKeyDown käsittelee loput näppäinpainallukset. Backspace poistaa
+    kursoria edeltävän merkin ja delete kursorin jälkeisen merkin.
      */
-    delete = (event) => {
+    onKeyDown = (event) => {
         // Handle backspace (8) and delete (46)
         if (event.keyCode === 8 || event.keyCode === 46) {
 
-            var message;
             if (event.target.selectionStart !== event.target.selectionEnd) {
                 // If there is a selection, del and backspace work identically
-                message = {
-                    startPos: event.target.selectionStart,
-                    endPos: event.target.selectionEnd,
-                };
+                this.sendDelta('', event.target.selectionStart, event.target.selectionEnd);
             } else {
                 // If there is no selection, deletion happens from different direction
-                message = {
-                    startPos: event.keyCode === 8 ? event.target.selectionStart - 1 : event.target.selectionStart,
-                    endPos: event.keyCode === 46 ? event.target.selectionEnd + 1 : event.target.selectionEnd,
-                };
+                this.sendDelta('',
+                    event.keyCode === 8 ? event.target.selectionStart - 1 : event.target.selectionStart,
+                    event.keyCode === 46 ? event.target.selectionEnd + 1 : event.target.selectionEnd
+                );
             }
-            message.type = 'DELTA';
-            message.content = '';
-            this.stompClient.send("/send", {}, JSON.stringify(message));
-
         }
     };
 
     changeName = (newName) => {
-        this.stompClient.send("/send", {}, JSON.stringify({type: 'NAME', filename: newName}));
-    };
+        this.sendName(newName);
+    }
 
+    /*
+    Funktio onPaste hoitaa toiminnallisuuden, kun käyttäjä käyttää järjestelmän oletusarvoista
+    liittämistoimintoa (esim. Windowsissa Ctrl-V).
+     */
     onPaste = (event) => {
-        var message = {
-            type: 'DELTA',
-            startPos: event.target.selectionStart,
-            endPos: event.target.selectionEnd,
-            content: event.clipboardData.getData('text/plain')
-        };
-        this.stompClient.send("/send", {}, JSON.stringify(message));
+        this.sendDelta(event.clipboardData.getData('text/plain'), event.target.selectionStart, event.target.selectionEnd);
     };
 
+    /*
+    Funktio onCut hoitaa toiminnallisuuden, kun käyttäjä käyttää järjestelmän oletusarvoista
+    leikkaustoimintoa (esim. Windowsissa Ctrl-X).
+     */
     onCut = (event) => {
-
+        this.sendDelta('', event.target.selectionStart, event.target.selectionEnd);
     }
 
 
@@ -143,7 +159,7 @@ class App extends Component {
                             <div>
                                 <textarea id="live_editori" rows="35" cols="150"
                                           placeholder={"Kirjoita tähän..."}
-                                          onKeyDown={this.delete}
+                                          onKeyDown={this.onKeyDown}
                                           onKeyPress={this.handleTyping}
                                           onPaste={this.onPaste}
                                           onCut={this.onCut}
