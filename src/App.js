@@ -12,8 +12,8 @@ class App extends Component {
      */
     componentDidMount = () => {
 
-        var socket = new SockJS("http://localhost:8080/ws");
-        // var socket = new SockJS("http://codelive-server.herokuapp.com/ws");
+        // var socket = new SockJS("http://localhost:8080/ws");
+        var socket = new SockJS("http://codelive-server.herokuapp.com/ws");
         this.stompClient = window.Stomp.over(socket);
 
         /* Avataan yhteys netissä olevaan pistokkeeseen (webSocket) */
@@ -56,21 +56,38 @@ class App extends Component {
     }
 
     /*
-     Funktio sendMessage lähettää websocketille editorin sisällön
+     Funktio sendDelta lähettää tyyppiä DELTA muotoisen viestin. Tämänmuotoisissa viesteissä
+     on sisältö (content), joka liitetään osaksi olemassaolevaa tekstiä. Lisäksi viestissä
+     tulee olla alkukoordinaatti (startPos) ja loppukoordinaatti(endPos), jotka kertovat,
+     mihibn kohtaan olemassaolevaa tekstiä muutos tehdään.
+
+     DELTA-tyyppisellä viestillä hoidetaan yksittäisten kirjainten lisääminen ja poistaminen,
+     sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
+     */
+    sendDelta = (content, startPos, endPos) => {
+        this.stompClient.send("/send", {}, JSON.stringify({
+            type: 'DELTA',
+            startPos: startPos,
+            endPos: endPos,
+            content: content
+        }));
+    }
+
+    /*
+     Funktio handleTyping lähettää websocketille tiedon siitä, mitä näppäintä on painettu
+     ja missä kohtaa kursori on tällöin ollut. Jos tekstissä on ollut maalattuna valinta,
+     lähetetään myös maalauksen alku- ja loppupiste. Tällöin maalattu alue normaalin
+     käytännön mukaisesti ylikirjoitetaan.
      */
     handleTyping = (event) => {
-        var message = {
-            type: 'DELTA',
-            startPos: event.target.selectionStart,
-            endPos: event.target.selectionEnd,
-            content: event.key
-        };
-
-        if (this.stompClient) {
-            this.stompClient.send("/send", {}, JSON.stringify(message));
-        }
+        this.sendDelta(event.key, event.target.selectionStart, event.target.selectionEnd);
     };
 
+    /*
+    Ylläoleva funktio handleTyping käsittelee ainoastaan tulostettavia merkkejä tuottavat
+    näppäinpainallukset. Funktio delete käsittelee poistonäppäimet backspace ja delete.
+    Backspace poistaa kursoria edeltävän merkin ja delete kursorin jälkeisen merkin.
+     */
     delete = (event) => {
         // Handle backspace (8) and delete (46)
         if (event.keyCode === 8 || event.keyCode === 46) {
@@ -100,6 +117,20 @@ class App extends Component {
         this.stompClient.send("/send", {}, JSON.stringify({type: 'NAME', filename: newName}));
     };
 
+    onPaste = (event) => {
+        var message = {
+            type: 'DELTA',
+            startPos: event.target.selectionStart,
+            endPos: event.target.selectionEnd,
+            content: event.clipboardData.getData('text/plain')
+        };
+        this.stompClient.send("/send", {}, JSON.stringify(message));
+    };
+
+    onCut = (event) => {
+
+    }
+
 
     render() {
         return (
@@ -114,9 +145,11 @@ class App extends Component {
                                           placeholder={"Kirjoita tähän..."}
                                           onKeyDown={this.delete}
                                           onKeyPress={this.handleTyping}
+                                          onPaste={this.onPaste}
+                                          onCut={this.onCut}
                                           value={this.state.content}
                                 ></textarea>
-                                <FileSaver filename={this.state.filename} changeNameCallback={this.changeName} />
+                                <FileSaver filename={this.state.filename} changeNameCallback={this.changeName}/>
 
                             </div>
 
