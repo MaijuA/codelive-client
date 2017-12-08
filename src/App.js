@@ -4,7 +4,7 @@ import FileSaver from './FileSaver';
 
 
 class App extends Component {
-    state = {content: ''};
+    state = {content: 'Otetaan yhteyttä palvelimeen...'};
 
     stompClient = null;
 
@@ -26,6 +26,7 @@ class App extends Component {
      Funktio onConnect ajetaan, kun saadaan yhteys WebSocketiin
      */
     onConnect = () => {
+        this.setState({content: "Yhteys saatu!"});
         this.stompClient.subscribe('/channel/public', this.onMessageReceived);
     };
 
@@ -33,6 +34,7 @@ class App extends Component {
      Funktio onError ajetaan, jos WebSocket-yhteyden ottamisessa tapahtuu virhe
      */
     onError = () => {
+        this.setState({content: 'Yhteyden muodostaminen epäonnistui'});
         console.log("Error, halp!");
     };
 
