@@ -5,6 +5,7 @@ class FileSaver extends React.Component {
     state = {filename: this.props.filename};
 
     componentWillReceiveProps(nextProps) {
+        if (nextProps.filename === null) return;
         console.log("GOT NEW PROPS");
         console.log(nextProps);
         this.setState({filename: nextProps.filename});

@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import SockJS from 'sockjs-client';
 import FileSaver from './FileSaver';
+import Channel from './Channel';
 
 
 class App extends Component {
-    state = {content: 'Otetaan yhteyttä palvelimeen...'};
+    subscription = null;
+    channel = null;
+    state = {channel: 'public', content: 'Otetaan yhteyttä palvelimeen...', filename: ''};
 
     stompClient = null;
 
@@ -13,8 +16,8 @@ class App extends Component {
      */
     componentDidMount = () => {
 
-        // var socket = new SockJS("http://localhost:8080/ws");
-        var socket = new SockJS("http://codelive-server.herokuapp.com/ws");
+        var socket = new SockJS("http://localhost:8080/ws");
+        // var socket = new SockJS("http://codelive-server.herokuapp.com/ws");
         this.stompClient = window.Stomp.over(socket);
 
         /* Avataan yhteys netissä olevaan pistokkeeseen (webSocket) */
@@ -26,8 +29,14 @@ class App extends Component {
      Funktio onConnect ajetaan, kun saadaan yhteys WebSocketiin
      */
     onConnect = () => {
-        this.setState({content: "Yhteys saatu!"});
-        this.stompClient.subscribe('/channel/public', this.onMessageReceived);
+        this.setState({content: "Yhteys saatu! Voit nyt liittyä haluamallesi kanavalle."});
+
+        /*
+        this.subscription = this.stompClient.subscribe('/channel/public', this.onMessageReceived);
+
+        // testing arbitrary channels
+        this.stompClient.subscribe('/channel/mychannel', this.onMessageReceived);
+        */
     };
 
     /*
@@ -38,6 +47,14 @@ class App extends Component {
         console.log("Error, halp!");
     };
 
+    joinChannel = (channelName) => {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
+        this.channel = channelName;
+        this.subscription = this.stompClient.subscribe('/channel/' + channelName, this.onMessageReceived);
+    }
+
     /*
      Funktio onMessageReceived ajetaan, kun websocket tuuppaa käyttäjälle viestin.
      Mahdolliset viestin tyypit ovat FULL, NAME ja DELTA. "FULL" lähetetään käyttäjälle
@@ -46,6 +63,8 @@ class App extends Component {
      arvo on muuttunut.
      */
     onMessageReceived = (payload) => {
+        console.log("Message received:");
+        console.log(payload);
         var message = JSON.parse(payload.body);
         var newState;
         if (message.type === 'FULL') {
@@ -72,7 +91,7 @@ class App extends Component {
      sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
      */
     sendDelta = (content, startPos, endPos) => {
-        this.stompClient.send("/send", {}, JSON.stringify({
+        this.stompClient.send("/send/" + this.channel, {}, JSON.stringify({
             type: 'DELTA',
             startPos: startPos,
             endPos: endPos,
@@ -87,7 +106,7 @@ class App extends Component {
      NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
      */
     sendName = (filename) => {
-        this.stompClient.send("/send", {}, JSON.stringify({
+        this.stompClient.send("/send" + this.channel, {}, JSON.stringify({
             type: 'NAME',
             filename: filename
         }));
@@ -100,7 +119,7 @@ class App extends Component {
      käytännön mukaisesti ylikirjoitetaan.
      */
     handleTyping = (event) => {
-        if (event.charCode == 13) {
+        if (event.charCode === 13) {
             // Jos painettu näppäin on Enter
             this.sendDelta("\n", event.target.selectionStart, event.target.selectionEnd);
         } else {
@@ -155,6 +174,8 @@ class App extends Component {
         document.execCommand('copy');
     }
 
+    onChange = () => {}
+
 
     render() {
         return (
@@ -165,17 +186,20 @@ class App extends Component {
                         <fieldset>
                             <legend>Online editor</legend>
                             <div>
+                                <Channel callback={this.joinChannel} />
                                 <textarea id="live_editori" rows="35" cols="150"
                                           placeholder={"Kirjoita tähän..."}
                                           onKeyDown={this.onKeyDown}
                                           onKeyPress={this.handleTyping}
+                                          onChange={this.onChange}
                                           onPaste={this.onPaste}
                                           onCut={this.onCut}
                                           value={this.state.content}
-                                ></textarea>
+                                 />
                                 <FileSaver filename={this.state.filename} changeNameCallback={this.changeName}/>
                                 <img id="copyToClipboardIcon"
                                      src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
+                                     alt="save to clipboard"
                                      onClick={this.copyToClipboard}/>
                             </div>
 
