@@ -10,6 +10,7 @@ class App extends Component {
     state = {channel: 'public', content: 'Otetaan yhteyttä palvelimeen...', filename: ''};
 
     stompClient = null;
+    username = "MisterFoo";
 
     /*
      Kun komponentti on saatu ladattua, yhdistetään websockettiin.
@@ -30,13 +31,6 @@ class App extends Component {
      */
     onConnect = () => {
         this.setState({content: "Yhteys saatu! Voit nyt liittyä haluamallesi kanavalle."});
-
-        /*
-        this.subscription = this.stompClient.subscribe('/channel/public', this.onMessageReceived);
-
-        // testing arbitrary channels
-        this.stompClient.subscribe('/channel/mychannel', this.onMessageReceived);
-        */
     };
 
     /*
@@ -47,12 +41,18 @@ class App extends Component {
         console.log("Error, halp!");
     };
 
-    joinChannel = (channelName) => {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
-        this.channel = channelName;
-        this.subscription = this.stompClient.subscribe('/channel/' + channelName, this.onMessageReceived);
+    leaveChannel = () => {
+        if (!this.subscription) return;
+        this.stompClient.send("/send/" + this.channel + ".leave", {}, JSON.stringify({content: this.username}));
+        this.subscription.unsubscribe();
+
+    }
+
+    joinChannel = (channel) => {
+        this.leaveChannel();
+        this.channel = channel;
+        this.subscription = this.stompClient.subscribe('/channel/' + channel, this.onMessageReceived);
+        this.stompClient.send("/send/" + this.channel + ".join", {}, JSON.stringify({content: this.username}));
     }
 
     /*
@@ -63,14 +63,12 @@ class App extends Component {
      arvo on muuttunut.
      */
     onMessageReceived = (payload) => {
-        console.log("Message received:");
-        console.log(payload);
         var message = JSON.parse(payload.body);
         var newState;
         if (message.type === 'FULL') {
             newState = {content: message.content, filename: message.filename};
         } else if (message.type === 'NAME') {
-            newState = {filename: message.filename};
+            newState = {filename: message.content};
         } else {
             newState = {
                 content: this.state.content.substring(0, message.startPos) +
@@ -91,7 +89,7 @@ class App extends Component {
      sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
      */
     sendDelta = (content, startPos, endPos) => {
-        this.stompClient.send("/send/" + this.channel, {}, JSON.stringify({
+        this.stompClient.send("/delta/" + this.channel, {}, JSON.stringify({
             type: 'DELTA',
             startPos: startPos,
             endPos: endPos,
@@ -106,9 +104,9 @@ class App extends Component {
      NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
      */
     sendName = (filename) => {
-        this.stompClient.send("/send" + this.channel, {}, JSON.stringify({
+        this.stompClient.send("/filename/" + this.channel, {}, JSON.stringify({
             type: 'NAME',
-            filename: filename
+            content: filename
         }));
     }
 
@@ -174,7 +172,8 @@ class App extends Component {
         document.execCommand('copy');
     }
 
-    onChange = () => {}
+    onChange = () => {
+    }
 
 
     render() {
@@ -186,7 +185,7 @@ class App extends Component {
                         <fieldset>
                             <legend>Online editor</legend>
                             <div>
-                                <Channel callback={this.joinChannel} />
+                                <Channel callback={this.joinChannel}/>
                                 <textarea id="live_editori" rows="35" cols="150"
                                           placeholder={"Kirjoita tähän..."}
                                           onKeyDown={this.onKeyDown}
@@ -195,7 +194,7 @@ class App extends Component {
                                           onPaste={this.onPaste}
                                           onCut={this.onCut}
                                           value={this.state.content}
-                                 />
+                                />
                                 <FileSaver filename={this.state.filename} changeNameCallback={this.changeName}/>
                                 <img id="copyToClipboardIcon"
                                      src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
