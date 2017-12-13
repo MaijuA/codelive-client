@@ -1,4 +1,5 @@
 import React from 'react';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 class Userlist extends React.Component {
     state = {users: this.props.activeUsers};
@@ -11,7 +12,7 @@ class Userlist extends React.Component {
         const userlist = [];
 
         for (var key in this.state.users) {
-            userlist.push(<span key={key}> {this.state.users[key]} </span>);
+            userlist.push(<span className="label label-warning" key={key}> {this.state.users[key]} </span>);
         }
 
         return (

@@ -4,15 +4,13 @@ import FileSaver from './FileSaver';
 import Userlist from './Userlist';
 import Beforeunload from 'react-beforeunload';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+
 
 /*
  Created by Jari Haavisto
-
  Editor-komponentti pitää sisällään kaiken perustoiminnallisuuden:
  Tekstin kirjoituskentän, kananvanvalintakomponentin,
  tiedostoon tallennuskomponentin sekä leikepöydälle kopioinnin.
-
  Jokainen editori ottaa oman yhteyden palvelimeen ja liittyy jollekin
  kanavalle. Editori on kiinni vain yhdellä kanavalla kerrallaan.
  */
@@ -174,7 +172,6 @@ class Editor extends React.Component {
      on sisältö (content), joka liitetään osaksi olemassaolevaa tekstiä. Lisäksi viestissä
      tulee olla alkukoordinaatti (startPos) ja loppukoordinaatti(endPos), jotka kertovat,
      mihibn kohtaan olemassaolevaa tekstiä muutos tehdään.
-
      DELTA-tyyppisellä viestillä hoidetaan yksittäisten kirjainten lisääminen ja poistaminen,
      sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
      */
@@ -190,7 +187,6 @@ class Editor extends React.Component {
     /*
      Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
      on tyypin lisäksi ainoastaan tiedostonimi (filename).
-
      NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
      */
     sendName = (filename) => {
@@ -210,13 +206,16 @@ class Editor extends React.Component {
 
     render() {
         return (
-
-            <form>
-                <Beforeunload onBeforeunload={this.leaveChannel}/>
-                    <Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>
-                    <Userlist activeUsers={this.state.users} />
+            <div className="container" style={{background: '#92A78C'}}>
+                <form>
+                    <br/>
+                    <Beforeunload onBeforeunload={this.leaveChannel}/>
+                    {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
+                    {/*<fieldset className="form-group">*/}
+                    <b>{this.props.channel}: </b><Userlist activeUsers={this.state.users}/>
+                    <br/>
                     <textarea id={this.props.id} rows="35" cols="150"
-                              placeholder={"Kirjoita tähän..."}
+                              placeholder={"Write here..."}
                               onKeyDown={this.onKeyDown}
                               onKeyPress={this.handleTyping}
                               onChange={this.onChange}
@@ -231,7 +230,9 @@ class Editor extends React.Component {
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
                          alt="save to clipboard"
                          onClick={this.copyToClipboard}/>
-            </form>
+                    {/*</fieldset>*/}
+                </form>
+            </div>
         );
     }
 }
