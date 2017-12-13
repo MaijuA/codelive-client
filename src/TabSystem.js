@@ -62,7 +62,7 @@ const TabListGenerator = props => (
 
 const ChildComponent = props =>
     <TabPanel tabId={props.number.toString()}>
-        <Editor id={"editor_" + props.number.toString()} username={props.username} channel={props.channel}/>
+        <Editor id={"editor_" + props.number} username={props.username} channel={props.channel}/>
     </TabPanel>
 
 export default TabSystem;

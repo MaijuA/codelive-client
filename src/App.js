@@ -24,14 +24,18 @@ class App extends Component {
      varsinainen käyttöliittymä
      */
     handleClick() {
+        var username = this.state.username;
+        var channelList = document.getElementById('channelList').value;
 
-        var channelsArray = document.getElementById('channelList').value.split(',').map(s => s.trim());
+        if (username && channelList) {
 
-        this.setState({
-            show: !this.state.show,
-            show2: this.state.show,
-            openChannels: channelsArray
-        });
+            var channelsArray = channelList.split(',').map(s => s.trim());
+
+            this.setState({
+                show: !this.state.show,
+                openChannels: channelsArray
+            });
+        }
     }
 
 
@@ -43,7 +47,7 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <ToggleDisplay show={this.state.show2}>
+                <ToggleDisplay show={!this.state.show}>
                     <center>
                         <div className="username-page-container">
                             <h1 className="title">Kirjoita käyttäjänimesi</h1>

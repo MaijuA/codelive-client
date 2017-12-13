@@ -56,6 +56,60 @@ class Editor extends React.Component {
     };
 
     /*
+     Funktio joinChannel liittää editorin argumenttina annetulle kanavalle.
+     */
+    joinChannel = (channel) => {
+        this.leaveChannel();
+        this.channel = channel;
+        var headers = {username: this.props.username};
+        this.subscription = this.stompClient.subscribe('/channel/' + channel, this.onMessageReceived, headers);
+        this.stompClient.send("/send/" + this.channel + ".join", {},
+            JSON.stringify({content: this.props.username}));
+    };
+
+    /*
+     Funktio leaveChannel poistaa editorin siltä kanavalta, jolle se on sillä hetkellä liitetty.
+     */
+    leaveChannel = () => {
+        if (!this.subscription) return;
+        this.stompClient.send("/send/" + this.channel + ".leave", {},
+            JSON.stringify({content: this.props.username}));
+        this.subscription.unsubscribe();
+
+    };
+
+    /*
+     Funktio sendDelta lähettää tyyppiä DELTA olevan viestin. Tämänmuotoisissa viesteissä
+     on sisältö (content), joka liitetään osaksi olemassaolevaa tekstiä. Lisäksi viestissä
+     tulee olla alkukoordinaatti (startPos) ja loppukoordinaatti(endPos), jotka kertovat,
+     mihibn kohtaan olemassaolevaa tekstiä muutos tehdään.
+
+     DELTA-tyyppisellä viestillä hoidetaan yksittäisten kirjainten lisääminen ja poistaminen,
+     sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
+     */
+    sendDelta = (content, startPos, endPos) => {
+        this.stompClient.send("/delta/" + this.channel, {}, JSON.stringify({
+            type: 'DELTA',
+            startPos: startPos,
+            endPos: endPos,
+            content: content
+        }));
+    };
+
+    /*
+     Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
+     on tyypin lisäksi ainoastaan tiedostonimi (filename).
+
+     NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
+     */
+    sendName = (filename) => {
+        this.stompClient.send("/filename/" + this.channel, {}, JSON.stringify({
+            type: 'NAME',
+            content: filename
+        }));
+    };
+
+    /*
      Funktio onMessageReceived ajetaan, kun websocket tuuppaa käyttäjälle viestin.
      Mahdolliset viestin tyypit ovat FULL, NAME ja DELTA. "FULL" lähetetään käyttäjälle
      kun hän kirjautuu sisään kanavalle. Viesti sisältää tekstirungon ja tiedostonimen.
@@ -141,65 +195,9 @@ class Editor extends React.Component {
     onChange = () => {
     };
 
-
     /*
-     Funktio joinChannel on callback-funktio Channel-komponentille, joka liittää editorin
-     argumenttina annetulle kanavalle.
-     */
-    joinChannel = (channel) => {
-        this.leaveChannel();
-        this.channel = channel;
-        var headers = {username: this.props.username};
-        this.subscription = this.stompClient.subscribe('/channel/' + channel, this.onMessageReceived, headers);
-        this.stompClient.send("/send/" + this.channel + ".join", {},
-            JSON.stringify({content: this.props.username}));
-    };
-
-    /*
-     Funktio leaveChannel on callback-funktio Channel-komponentille, joka poistaa editorin
-     siltä kanavalta, jolle se on sillä hetkellä liitetty.
-     */
-    leaveChannel = () => {
-        if (!this.subscription) return;
-        this.stompClient.send("/send/" + this.channel + ".leave", {},
-            JSON.stringify({content: this.props.username}));
-        this.subscription.unsubscribe();
-
-    };
-
-    /*
-     Funktio sendDelta lähettää tyyppiä DELTA olevan viestin. Tämänmuotoisissa viesteissä
-     on sisältö (content), joka liitetään osaksi olemassaolevaa tekstiä. Lisäksi viestissä
-     tulee olla alkukoordinaatti (startPos) ja loppukoordinaatti(endPos), jotka kertovat,
-     mihibn kohtaan olemassaolevaa tekstiä muutos tehdään.
-
-     DELTA-tyyppisellä viestillä hoidetaan yksittäisten kirjainten lisääminen ja poistaminen,
-     sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
-     */
-    sendDelta = (content, startPos, endPos) => {
-        this.stompClient.send("/delta/" + this.channel, {}, JSON.stringify({
-            type: 'DELTA',
-            startPos: startPos,
-            endPos: endPos,
-            content: content
-        }));
-    };
-
-    /*
-     Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
-     on tyypin lisäksi ainoastaan tiedostonimi (filename).
-
-     NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
-     */
-    sendName = (filename) => {
-        this.stompClient.send("/filename/" + this.channel, {}, JSON.stringify({
-            type: 'NAME',
-            content: filename
-        }));
-    };
-
-    /*
-     TOIMIIKO TÄMÄ UUDELLA ID-JÄRJESTELMÄLLÄ?
+     Funktio copyToClipboard kopioi käyttäjän leikepöydälle kaiken, mitä editori-ikkunassa
+     sillä hetkellä on.
      */
     copyToClipboard = (event) => {
         document.getElementById(this.props.id).select();
@@ -212,8 +210,7 @@ class Editor extends React.Component {
             <form>
                 <Beforeunload onBeforeunload={this.leaveChannel}/>
                 <fieldset>
-                    <legend>CodeLive</legend>
-                    {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
+                    <legend> CodeLive: #{this.props.channel} </legend>
                     <Userlist activeUsers={this.state.users}/>
                     <textarea id={this.props.id} rows="35" cols="150"
                               placeholder={"Kirjoita tähän..."}

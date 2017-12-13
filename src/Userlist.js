@@ -15,7 +15,7 @@ class Userlist extends React.Component {
         }
 
         return (
-            <div>{userlist}</div>
+            <span className="userList">{userlist}</span>
         )
     }
 }
