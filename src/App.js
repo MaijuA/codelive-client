@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import TabSystem from './TabSystem';
 import {Tabs, Tab, TabPanel, TabList} from 'react-web-tabs';
 import ToggleDisplay from 'react-toggle-display';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 
@@ -45,18 +46,20 @@ class App extends Component {
                             <input value={this.state.username} onChange={this.nimiMuuttunut} className="form-control"
                                    id="name"/>
                             <br></br><br></br>
-                            <button type="submit" onClick={ () => this.handleClick() }>Sisään</button>
+                            <button type="submit" className="btn-primary" onClick={ () => this.handleClick() }>Aloita!</button>
                         </div>
                     </center>
                 </ToggleDisplay>
 
                 <ToggleDisplay show={this.state.show}>
+                    <h1 className='codelive-h1'>CODELIVE</h1>
                     <Tabs
                         defaultTab="0"
                         onChange={(tabId) => {
                             console.log(tabId)
                         }}>
                         <center>
+
                             {/*
                             <p>{this.state.name}</p>
                             <TabList>
@@ -65,6 +68,8 @@ class App extends Component {
                                 <Tab tabFor="2">Tab 3</Tab>
                             </TabList>
                             */}
+                            <br/>
+                            <NewTab username={this.state.username} />
                             <TabSystem username={this.state.username} />
                             {/*
                             <TabPanel tabId="0">

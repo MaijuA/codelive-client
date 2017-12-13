@@ -4,6 +4,8 @@ import Channel from './Channel';
 import FileSaver from './FileSaver';
 import Userlist from './Userlist';
 import Beforeunload from 'react-beforeunload';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 /*
  Created by Jari Haavisto
@@ -212,8 +214,6 @@ class Editor extends React.Component {
 
             <form>
                 <Beforeunload onBeforeunload={this.leaveChannel}/>
-                <fieldset>
-                    <legend>CodeLive</legend>
                     <Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>
                     <Userlist activeUsers={this.state.users} />
                     <textarea id={this.props.id} rows="35" cols="150"
@@ -231,8 +231,6 @@ class Editor extends React.Component {
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
                          alt="save to clipboard"
                          onClick={this.copyToClipboard}/>
-
-                </fieldset>
             </form>
         );
     }

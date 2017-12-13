@@ -63,3 +63,14 @@ div.tab button.active {
     margin: 0 auto;
     margin-top: -160px;
 }
+
+h1 {
+    font-size: x-large;
+    padding-bottom: 3%;
+}
+
+.codelive-h1 {
+    text-align: center;
+    padding-top: 5%;
+}
+

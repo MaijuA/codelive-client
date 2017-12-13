@@ -18,11 +18,13 @@ class Channel extends React.Component {
                 <input id={this.props.channelId}
                        type="text"
                        value={this.state.channel}
-                       onChange={this.channelNameInput} />
+                       onChange={this.channelNameInput}/>
                 <button id="change_channel"
                         onClick={this.chooseChannel}>Valitse Kanava</button>
-                <br />
+                <br/>
+                <br/>
             </span>
+
         )
     }
 }
