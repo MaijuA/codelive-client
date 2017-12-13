@@ -1,6 +1,5 @@
 import React from 'react';
 import SockJS from 'sockjs-client';
-import Channel from './Channel';
 import FileSaver from './FileSaver';
 import Userlist from './Userlist';
 import Beforeunload from 'react-beforeunload';
@@ -205,7 +204,7 @@ class Editor extends React.Component {
      TOIMIIKO TÄMÄ UUDELLA ID-JÄRJESTELMÄLLÄ?
      */
     copyToClipboard = (event) => {
-        document.querySelector("#live_editori").select();
+        document.getElementById(this.props.id).select();
         document.execCommand('copy');
     };
 
@@ -225,7 +224,8 @@ class Editor extends React.Component {
                               onCut={this.onCut}
                               value={this.state.content}
                     />
-                    <FileSaver filename={this.state.filename}
+                    <FileSaver editorId={this.props.id}
+                               filename={this.state.filename}
                                changeNameCallback={this.sendName}/>
                     <img id="copyToClipboardIcon"
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"

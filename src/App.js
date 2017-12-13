@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import TabSystem from './TabSystem';
-import {Tabs, Tab, TabPanel, TabList} from 'react-web-tabs';
+import {Tabs} from 'react-web-tabs';
 import ToggleDisplay from 'react-toggle-display';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -14,7 +14,8 @@ class App extends Component {
         channel: 'public',
         username: '',
         content: 'Otetaan yhteyttä palvelimeen...',
-        filename: ''
+        filename: '',
+        openChannels: []
     };
 
     stompClient = null;
@@ -24,15 +25,19 @@ class App extends Component {
      varsinainen käyttöliittymä
      */
     handleClick() {
+
+        var channelsArray = document.getElementById('channelList').value.split(',').map(s => s.trim());
+
         this.setState({
             show: !this.state.show,
             show2: this.state.show,
+            openChannels: channelsArray
         });
     }
 
 
     nimiMuuttunut = (event) => {
-        this.setState({username: event.target.value})
+        this.setState({username: event.target.value});
     }
 
 
@@ -58,6 +63,7 @@ class App extends Component {
                         onChange={(tabId) => {
                             console.log(tabId)
                         }}>
+                    <Tabs defaultTab="0" onChange={(tabId) => {}}>
                         <center>
 
                             {/*
@@ -82,6 +88,7 @@ class App extends Component {
                                 <Editor id="editor_3" username={this.state.username} />
                             </TabPanel>
                             */}
+                            <TabSystem username={this.state.username} openChannels={this.state.openChannels} />
                         </center>
 
                     </Tabs>

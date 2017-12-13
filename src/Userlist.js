@@ -11,7 +11,7 @@ class Userlist extends React.Component {
         const userlist = [];
 
         for (var key in this.state.users) {
-            userlist.push(<span> {this.state.users[key]} </span>);
+            userlist.push(<span key={key}> {this.state.users[key]} </span>);
         }
 
         return (

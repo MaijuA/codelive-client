@@ -14,7 +14,7 @@ class FileSaver extends React.Component {
         var filename = document.getElementById("filename").value;
         if (!filename) filename = "CodeLive.txt";
 
-        var text = document.getElementById("live_editori").value;
+        var text = document.getElementById(this.props.editorId).value;
         var blob = new Blob([text], {type: "text/plain;charset=utf-8"});
         saveAs(blob, filename);
 
