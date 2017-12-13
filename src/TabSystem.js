@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Tab, TabPanel, TabList} from 'react-web-tabs';
 import Editor from './Editor';
+import Logo from'./codelive_logo.png';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './NewTab.css';
 
 /*
@@ -33,18 +35,30 @@ class TabSystem extends Component {
         const children = [];
         const children2 = [];
         for (var i = 0; i < this.state.channelNames.length; i += 1) {
-            children.push(<TabListGenerator key={i} number={i} name={this.state.channelNames[i]} />);
+            children.push(<TabListGenerator key={i} number={i} name={this.state.channelNames[i]}/>);
             children2.push(
                 <ChildComponent key={i} number={i}
                                 username={this.props.username}
-                                channel={this.state.channelNames[i]} />);
+                                channel={this.state.channelNames[i]}/>);
         }
 
         return (
             <div>
-                {children}
-                <button type="submit" onClick={this.addNewChannel}>Uusi kanava</button>
-                <input type="text" value={this.state.newChannelName} onChange={this.handleTypeChannelName}/>
+                <div class="row">
+                    <div class="col-sm-4">{children}<br/></div>
+                    <div class="col-sm-4"><h1>CodeLive</h1></div>
+                        {/*<br/><img src={Logo} alt="logo"/>*/}
+                    <div class="col-sm-4">
+                        {/*<label style={{margin: '2%'}}>Join a channel or add a new one:</label><br/>*/}
+                        <input type="text" placeholder={"Channel name..."} value={this.state.newChannelName}
+                               onChange={this.handleTypeChannelName}/>
+                        <button className="btn-success" style={{margin: '2%'}} type="submit"
+                                onClick={this.addNewChannel}>
+                            Go!
+                        </button>
+                    </div>
+                </div>
+                <br/>
                 {children2}
             </div>
         );
@@ -54,7 +68,7 @@ class TabSystem extends Component {
 
 const TabListGenerator = props => (
     <TabList className="tabi">
-        <Tab tabFor={props.number.toString()}>
+        <Tab className="btn btn-warning" tabFor={props.number.toString()}>
             {props.name}
         </Tab>
     </TabList>

@@ -1,13 +1,13 @@
-legend {
-    display: block;
-    padding-left: 2px;
-    padding-right: 2px;
-    border: none;
-}
-fieldset {
-    background-color: #f4f4f4;
-    margin: 30px;
-}
+/*legend {*/
+    /*display: block;*/
+    /*padding-left: 2px;*/
+    /*padding-right: 2px;*/
+    /*border: none;*/
+/*}*/
+/*fieldset {*/
+    /*background-color: #f4f4f4;*/
+    /*margin: 30px;*/
+/*}*/
 textarea {
     border:1px solid #999999;
     width:98%;
@@ -48,7 +48,6 @@ div.tab button.active {
     background: #fff;
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
     border-radius: 2px;
-    width: auto;
     max-width: 400px;
     display: inline-block;
     margin-top: 42px;
@@ -63,3 +62,7 @@ div.tab button.active {
     margin: 0 auto;
     margin-top: -160px;
 }
+
+/*body {*/
+    /*background-color: #E0D5AD;*/
+/*}*/

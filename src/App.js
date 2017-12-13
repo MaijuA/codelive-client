@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import TabSystem from './TabSystem';
 import {Tabs} from 'react-web-tabs';
 import ToggleDisplay from 'react-toggle-display';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 
@@ -50,24 +51,35 @@ class App extends Component {
                 <ToggleDisplay show={!this.state.show}>
                     <center>
                         <div className="username-page-container">
-                            <h1 className="title">Kirjoita käyttäjänimesi</h1>
+                            <h2 style={{textAlign: 'center', margin: '3%'}}>CODELIVE</h2>
+                            <label>PICK A USERNAME:</label>
                             <input value={this.state.username} onChange={this.nimiMuuttunut} className="form-control"
                                    id="name"/>
-                            <h1 className="title">Valitse kanavat</h1>
+                            <br/>
+                            <label>CHANNELS:</label>
                             <input className="form-control" id="channelList"/>
+                            <i>You can add existing channels or new ones: (channel1, channel2, ...)</i>
                             <br></br><br></br>
-                            <button type="submit" onClick={ () => this.handleClick() }>Sisään</button>
+                            <button type="submit" className="btn-success" onClick={ () => this.handleClick() }>Start!</button>
                         </div>
                     </center>
                 </ToggleDisplay>
 
                 <ToggleDisplay show={this.state.show}>
+                     {/*<Tabs*/}
+                        {/*defaultTab="0"*/}
+                        {/*onChange={(tabId) => {*/}
+                            {/*console.log(tabId)*/}
+                        {/*}}>*/}
                     <Tabs defaultTab="0" onChange={(tabId) => {}}>
                         <center>
+
+                            <br/>
+
                             <TabSystem username={this.state.username} openChannels={this.state.openChannels} />
                         </center>
 
-                    </Tabs>
+                   </Tabs>
 
                 </ToggleDisplay>
 

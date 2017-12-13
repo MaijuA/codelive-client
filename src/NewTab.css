@@ -2,3 +2,18 @@
     display: inline-block;
     margin: 2px;
 }
+
+.username-page-container {
+    background: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    border-radius: 2px;
+    /*width: auto;*/
+    max-width: 90%;
+    /*display: inline-block;*/
+    vertical-align: middle;
+    position: relative;
+    /*padding: 35px 55px 35px;*/
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}

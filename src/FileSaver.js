@@ -1,5 +1,7 @@
 import React from 'react';
 import saveAs from 'save-as';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
 
 class FileSaver extends React.Component {
     state = {filename: this.props.filename};
@@ -37,7 +39,7 @@ class FileSaver extends React.Component {
                        value={this.state.filename}
                        onChange={this.filenameOnChange}
                        onBlur={this.filenameOnBlur}/>
-                <button id="save_btn" onClick={this.saveFile}>Talleta</ button>
+                <button style={{margin: '2%'}} className="btn-primary" id="save_btn" onClick={this.saveFile}>Save</ button>
             </div>
         )
     }
