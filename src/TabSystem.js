@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Tabs, Tab, TabPanel, TabList} from 'react-web-tabs';
+import {Tab, TabPanel, TabList} from 'react-web-tabs';
 import Editor from './Editor';
 import './NewTab.css';
 
@@ -7,10 +7,14 @@ import './NewTab.css';
  Created by Pekka
  */
 class TabSystem extends Component {
+
+    componentWillReceiveProps(newProps) {
+        if (newProps.openChannels) this.setState({channelNames: newProps.openChannels});
+    }
+
     state = {
-        numChildren: 1,
         newChannelName: '',
-        channelNames: ['public']
+        channelNames: this.props.openChannels
     };
 
     handleTypeChannelName = (event) => {
@@ -19,7 +23,7 @@ class TabSystem extends Component {
 
     addNewChannel = () => {
         this.setState({
-            numChildren: this.state.numChildren + 1,
+            //numChildren: this.state.numChildren + 1,
             channelNames: this.state.channelNames.concat(this.state.newChannelName),
             newChannelName: ''
         });
@@ -28,7 +32,7 @@ class TabSystem extends Component {
     render() {
         const children = [];
         const children2 = [];
-        for (var i = 0; i < this.state.numChildren; i += 1) {
+        for (var i = 0; i < this.state.channelNames.length; i += 1) {
             children.push(<TabListGenerator key={i} number={i} name={this.state.channelNames[i]} />);
             children2.push(
                 <ChildComponent key={i} number={i}
