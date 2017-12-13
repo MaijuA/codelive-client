@@ -268,7 +268,7 @@ class Editor extends React.Component {
                     {/*<fieldset className="form-group">*/}
                     <b>{this.props.channel}: </b><Userlist activeUsers={this.state.users}/>
                     <br/>
-                    <textarea id={this.props.id} rows="35" cols="150"
+                    <textarea id={this.props.id} rows="19" cols="150"
                               placeholder={"Write here..."}
                               onKeyDown={this.onKeyDown}
                               onKeyPress={this.handleTyping}
