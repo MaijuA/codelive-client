@@ -279,6 +279,7 @@ class Editor extends React.Component {
                     />
                     <FileSaver editorId={this.props.id}
                                filename={this.state.filename}
+                               channelName={this.props.channel}
                                changeNameCallback={this.sendName}/>
                     <img id="copyToClipboardIcon"
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
