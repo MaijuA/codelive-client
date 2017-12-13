@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import Editor from './Editor';
-import NewTab from './NewTab';
+import TabSystem from './TabSystem';
 import {Tabs, Tab, TabPanel, TabList} from 'react-web-tabs';
 import ToggleDisplay from 'react-toggle-display';
 import './App.css';
@@ -66,7 +65,7 @@ class App extends Component {
                                 <Tab tabFor="2">Tab 3</Tab>
                             </TabList>
                             */}
-                            <NewTab username={this.state.username} />
+                            <TabSystem username={this.state.username} />
                             {/*
                             <TabPanel tabId="0">
                                 <Editor id="editor_0" username={this.state.username} />

@@ -45,6 +45,7 @@ class Editor extends React.Component {
      */
     onConnect = () => {
         this.setState({content: "Yhteys saatu! Voit nyt liittyä haluamallesi kanavalle."});
+        this.joinChannel(this.props.channel);
     };
 
     /*
