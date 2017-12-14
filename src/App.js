@@ -36,6 +36,7 @@ class App extends Component {
                 show: !this.state.show,
                 openChannels: channelsArray
             });
+            document.body.style.backgroundColor = "white";
         }
     }
 
@@ -51,7 +52,7 @@ class App extends Component {
                 <ToggleDisplay show={!this.state.show}>
                     <center>
                         <div className="username-page-container">
-                            <h2 style={{textAlign: 'center', margin: '3%'}}>CODELIVE</h2>
+                            <h2 style={{textAlign: 'center', margin: '3%'}}>CodeLive</h2>
                             <label>PICK A USERNAME:</label>
                             <input value={this.state.username} onChange={this.nimiMuuttunut} className="form-control"
                                    id="name"/>

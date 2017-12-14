@@ -260,15 +260,13 @@ class Editor extends React.Component {
 
     render() {
         return (
-            <div className="container" style={{background: '#92A78C'}}>
+            <div className="container" style={{background: '#f4f4f4'}}>
                 <form>
                     <br/>
                     <Beforeunload onBeforeunload={this.leaveChannel}/>
-                    {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
-                    {/*<fieldset className="form-group">*/}
-                    <b>{this.props.channel}: </b><Userlist activeUsers={this.state.users}/>
-                    <br/>
-                    <textarea id={this.props.id} rows="19" cols="150"
+                    <b>{this.props.channel}: </b><br/><Userlist activeUsers={this.state.users}/>
+                    <br/><br/>
+                    <textarea id={this.props.id} rows="15" cols="150"
                               placeholder={"Write here..."}
                               onKeyDown={this.onKeyDown}
                               onKeyPress={this.handleTyping}
@@ -276,7 +274,7 @@ class Editor extends React.Component {
                               onPaste={this.onPaste}
                               onCut={this.onCut}
                               value={this.state.content}
-                    />
+                    /><br/>
                     <img id="copyToClipboardIcon"
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
                          alt="save to clipboard"
@@ -284,7 +282,7 @@ class Editor extends React.Component {
                     <FileSaver editorId={this.props.id}
                                filename={this.state.filename}
                                changeNameCallback={this.sendName}/>
-                    {/*</fieldset>*/}
+                    <br/><br/>
                 </form>
             </div>
         );

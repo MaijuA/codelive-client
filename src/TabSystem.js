@@ -50,7 +50,7 @@ class TabSystem extends Component {
                     <div className="col-sm-4">
                         {/*<label style={{margin: '2%'}}>Join a channel or add a new one:</label><br/>*/}
                         <input type="text" placeholder={"Channel name..."} value={this.state.newChannelName}
-                               onChange={this.handleTypeChannelName}/>
+                               onChange={this.handleTypeChannelName}/><br/>
                         <button className="btn-success" style={{margin: '2%'}} type="submit"
                                 onClick={this.addNewChannel}>
                             Go!
@@ -58,7 +58,9 @@ class TabSystem extends Component {
                     </div>
                 </div>
                 <br/>
+
                 {children2}
+
             </div>
         );
     }
