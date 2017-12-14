@@ -16,7 +16,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 class Editor extends React.Component {
 
     state = {
-        content: 'Otetaan yhteyttä palvelimeen...',
+        content: 'Connecting to server...',
         filename: ''
     };
 
@@ -42,7 +42,7 @@ class Editor extends React.Component {
      Funktio onConnect ajetaan, kun saadaan yhteys WebSocketiin
      */
     onConnect = () => {
-        this.setState({content: "Yhteys saatu! Voit nyt liittyä haluamallesi kanavalle."});
+        this.setState({content: "Connected!"});
         this.joinChannel(this.props.channel);
     };
 
@@ -50,7 +50,7 @@ class Editor extends React.Component {
      Funktio onError ajetaan, jos WebSocket-yhteyden ottamisessa tapahtuu virhe
      */
     onError = () => {
-        this.setState({content: 'Yhteyden muodostaminen epäonnistui'});
+        this.setState({content: 'Failed to connect!'});
         console.log("Error, halp!");
     };
 
@@ -286,7 +286,9 @@ class Editor extends React.Component {
                                    onClick={this.closeEditorCallback}/>
                     <br/>
                     <Beforeunload onBeforeunload={this.leaveChannel}/>
-                    <b>{this.props.channel}: </b><br/><Userlist activeUsers={this.state.users}/>
+                    {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
+                    {/*<fieldset className="form-group">*/}
+                    <p style={{fontSize: '1.3em'}}>{this.props.channel}</p><Userlist activeUsers={this.state.users}/>
                     <br/><br/>
                     <textarea id={this.props.id} rows="15" cols="150"
                               placeholder={"Write here..."}

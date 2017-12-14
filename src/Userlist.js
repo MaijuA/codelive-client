@@ -12,7 +12,7 @@ class Userlist extends React.Component {
         const userlist = [];
 
         for (var key in this.state.users) {
-            userlist.push(<span className="label label-warning" key={key}> {this.state.users[key]} </span>);
+            userlist.push(<span style={{backgroundColor: 'lightgrey', fontSize: '1em', margin: '2px'}} className="badge badge-warning" key={key}> {this.state.users[key]} </span>);
         }
 
         return (
