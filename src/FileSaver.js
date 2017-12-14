@@ -15,13 +15,10 @@ class FileSaver extends React.Component {
         /*
         // Kerrotaan Reactille, että halutaan itse käsitellä tapahtuma
         event.preventDefault();
-
         var kirjoituKanava = this.state.kanavatunnus.toString();
         console.log("Kanavatunnus on: " + this.state.kanavatunnus);
-
         var URL = "tallenna/" + kirjoituKanava;
         console.log("Tallennuspolku tietokantaan on: " + URL);
-
         window.location.assign(URL)
         // window.location.replace(URL);
         // window.location.href = "URL";
@@ -65,7 +62,7 @@ class FileSaver extends React.Component {
                        onChange={this.filenameOnChange}
                        onBlur={this.filenameOnBlur}/>
 
-                <button style={{margin: '1%'}} className="btn btn-primary" id="save_btn_db" onClick={this.tallennaKantaan}>Save</button>
+                <button style={{margin: '1%'}} className="btn btn-primary" id="save_btn_db" onClick={this.saveToDatabase}>Save</button>
                 <button style={{margin: '1%'}} className="btn btn-basic" id="save_btn" onClick={this.saveFile}>Download</button>
             </div>
         )

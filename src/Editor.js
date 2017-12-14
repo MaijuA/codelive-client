@@ -5,7 +5,6 @@ import Userlist from './Userlist';
 import Beforeunload from 'react-beforeunload';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-
 /*
  Created by Jari Haavisto
  Editor-komponentti pitää sisällään kaiken perustoiminnallisuuden:
@@ -17,7 +16,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 class Editor extends React.Component {
 
     state = {
-        content: 'Otetaan yhteyttä palvelimeen...',
+        content: 'Connecting to server...',
         filename: ''
     };
 
@@ -43,7 +42,7 @@ class Editor extends React.Component {
      Funktio onConnect ajetaan, kun saadaan yhteys WebSocketiin
      */
     onConnect = () => {
-        this.setState({content: "Yhteys saatu! Voit nyt liittyä haluamallesi kanavalle."});
+        this.setState({content: "Connected!"});
         this.joinChannel(this.props.channel);
     };
 
@@ -51,7 +50,7 @@ class Editor extends React.Component {
      Funktio onError ajetaan, jos WebSocket-yhteyden ottamisessa tapahtuu virhe
      */
     onError = () => {
-        this.setState({content: 'Yhteyden muodostaminen epäonnistui'});
+        this.setState({content: 'Failed to connect!'});
         console.log("Error, halp!");
     };
 
@@ -83,7 +82,6 @@ class Editor extends React.Component {
      on sisältö (content), joka liitetään osaksi olemassaolevaa tekstiä. Lisäksi viestissä
      tulee olla alkukoordinaatti (startPos) ja loppukoordinaatti(endPos), jotka kertovat,
      mihibn kohtaan olemassaolevaa tekstiä muutos tehdään.
-
      DELTA-tyyppisellä viestillä hoidetaan yksittäisten kirjainten lisääminen ja poistaminen,
      sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
      */
@@ -99,7 +97,6 @@ class Editor extends React.Component {
     /*
      Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
      on tyypin lisäksi ainoastaan tiedostonimi (filename).
-
      NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
      */
     sendName = (filename) => {
@@ -200,6 +197,7 @@ class Editor extends React.Component {
      argumenttina annetulle kanavalle.
      */
     joinChannel = (channel) => {
+        console.log("Joining channel");
         this.leaveChannel();
         this.channel = channel;
         var headers = {username: this.props.username};
@@ -258,22 +256,39 @@ class Editor extends React.Component {
         document.execCommand('copy');
     };
 
-    saveToDatabase = (event) => {
-        this.stompClient.send("/send/" + this.props.channel + ".save", {},
-            JSON.stringify({}));
-    }
+    /*
+    Funktio saveToDatabase on callback-funktio FileSaver-komponentille, joka lähettää
+    palvelimelle käskyn tallettaa tällä hetkellä muistissa oleva kanavatieto
+    tietokantaan.
+     */
+    saveToDatabase = () => {
+        this.stompClient.send("/send/" + this.channel + ".save", {}, JSON.stringify({}));
+    };
+
+    /*
+    Sulkeaksemme editori-ikkunan, kutsutaan callback-funktiota parametrilla kanavan nimi.
+     */
+    closeEditorCallback = () => {
+        this.props.closeEditorCallback(this.props.channel);
+    };
+
+
 
     render() {
         return (
-            <div className="container" style={{background: '#92A78C'}}>
-                <form>
+            <div className="container" style={{background: '#f4f4f4'}}>
+                <form><img name="window-close"
+                           id="closeEditorIcon"
+                           src="https://png.icons8.com/small/540/close-window.png"
+                           alt="close editor"
+                           onClick={this.closeEditorCallback}/>
                     <br/>
                     <Beforeunload onBeforeunload={this.leaveChannel}/>
                     {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
                     {/*<fieldset className="form-group">*/}
-                    <b>{this.props.channel}: </b><Userlist activeUsers={this.state.users}/>
-                    <br/>
-                    <textarea id={this.props.id} rows="19" cols="150"
+                    <p style={{fontSize: '1.3em'}}>{this.props.channel}</p><Userlist activeUsers={this.state.users}/>
+                    <br/><br/>
+                    <textarea id={this.props.id} rows="15" cols="150"
                               placeholder={"Write here..."}
                               onKeyDown={this.onKeyDown}
                               onKeyPress={this.handleTyping}
@@ -281,17 +296,16 @@ class Editor extends React.Component {
                               onPaste={this.onPaste}
                               onCut={this.onCut}
                               value={this.state.content}
-                    />
-                    <FileSaver editorId={this.props.id}
-                               filename={this.state.filename}
-                               channelName={this.props.channel}
-                               saveToDatabaseCallback={this.saveToDatabase}
-                               changeNameCallback={this.sendName}/>
+                    /><br/>
                     <img id="copyToClipboardIcon"
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
                          alt="save to clipboard"
                          onClick={this.copyToClipboard}/>
-                    {/*</fieldset>*/}
+                    <FileSaver editorId={this.props.id}
+                               filename={this.state.filename}
+                               changeNameCallback={this.sendName}
+                               saveToDatabaseCallback={this.saveToDatabase} />
+                    <br/><br/>
                 </form>
             </div>
         );
