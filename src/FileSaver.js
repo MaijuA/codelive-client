@@ -9,30 +9,24 @@ class FileSaver extends React.Component {
         kanavatunnus: this.props.channelName
     };
 
-    // stompClient = null;
-
-    tallennaKantaan = (event) => {
+    saveToDatabase = (event) => {
+        event.preventDefault();
+        this.props.saveToDatabaseCallback();
+        /*
         // Kerrotaan Reactille, että halutaan itse käsitellä tapahtuma
         event.preventDefault();
-this.props.saveToDatabaseCallback();
-/*
-        this.stompClient.send("/send/" + this.kanavatunnus + ".save", {},
-            JSON.stringify({}));
-*/
 
-/*
         var kirjoituKanava = this.state.kanavatunnus.toString();
         console.log("Kanavatunnus on: " + this.state.kanavatunnus);
 
         var URL = "tallenna/" + kirjoituKanava;
         console.log("Tallennuspolku tietokantaan on: " + URL);
 
-
-        // window.location.assign(URL)
+        window.location.assign(URL)
         // window.location.replace(URL);
         // window.location.href = "URL";
         // window.open(URL,"_self")
-*/
+        */
     }
 
     componentWillReceiveProps(nextProps) {
@@ -62,16 +56,17 @@ this.props.saveToDatabaseCallback();
     render() {
         return (
             <div>
-                <button style={{margin: '2%'}} className="btn-primary" id="save_btn" onClick={this.saveFile}>Download</button>
 
                 <input type="text"
+                       style={{margin: '1%'}}
                        id="filename"
                        placeholder="CodeLive.txt"
                        value={this.state.filename}
                        onChange={this.filenameOnChange}
                        onBlur={this.filenameOnBlur}/>
 
-                <button style={{margin: '2%'}} className="btn-db" id="save_btn_db" onClick={this.tallennaKantaan}>Save to database</button>
+                <button style={{margin: '1%'}} className="btn btn-primary" id="save_btn_db" onClick={this.tallennaKantaan}>Save</button>
+                <button style={{margin: '1%'}} className="btn btn-basic" id="save_btn" onClick={this.saveFile}>Download</button>
             </div>
         )
     }

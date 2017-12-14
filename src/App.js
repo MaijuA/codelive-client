@@ -36,6 +36,7 @@ class App extends Component {
                 show: !this.state.show,
                 openChannels: channelsArray
             });
+            document.body.style.backgroundColor = "white";
         }
     }
 
@@ -51,7 +52,8 @@ class App extends Component {
                 <ToggleDisplay show={!this.state.show}>
                     <center>
                         <div className="username-page-container">
-                            <h2 style={{textAlign: 'center', margin: '3%'}}>CODELIVE</h2>
+                            <h2 style={{textAlign: 'center', margin: '3%'}}>CodeLive</h2>
+                            <br/>
                             <label>PICK A USERNAME:</label>
                             <input value={this.state.username} onChange={this.nimiMuuttunut} className="form-control"
                                    id="name"/>
@@ -60,7 +62,7 @@ class App extends Component {
                             <input className="form-control" id="channelList"/>
                             <i>You can add existing channels or new ones: (channel1, channel2, ...)</i>
                             <br></br><br></br>
-                            <button type="submit" className="btn-success" onClick={ () => this.handleClick() }>Start!</button>
+                            <button type="submit" className="btn btn-success" onClick={ () => this.handleClick() }>Start!</button>
                         </div>
                     </center>
                 </ToggleDisplay>
