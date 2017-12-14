@@ -52,16 +52,18 @@ class FileSaver extends React.Component {
     render() {
         return (
             <div>
-                <button style={{margin: '2%'}} className="btn-primary" id="save_btn" onClick={this.saveFile}>Download</button>
 
                 <input type="text"
+                       style={{margin: '1%'}}
                        id="filename"
                        placeholder="CodeLive.txt"
                        value={this.state.filename}
                        onChange={this.filenameOnChange}
                        onBlur={this.filenameOnBlur}/>
 
-                <button style={{margin: '2%'}} className="btn-db" id="save_btn_db" onClick={this.tallennaKantaan}>Save to database</button>
+                <button style={{margin: '1%'}} className="btn btn-primary" id="save_btn_db" onClick={this.tallennaKantaan}>Save</button>
+                <button style={{margin: '1%'}} className="btn btn-basic" id="save_btn" onClick={this.saveFile}>Download</button>
+
             </div>
         )
     }

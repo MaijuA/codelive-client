@@ -266,7 +266,7 @@ class Editor extends React.Component {
                     <Beforeunload onBeforeunload={this.leaveChannel}/>
                     {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
                     {/*<fieldset className="form-group">*/}
-                    <b>{this.props.channel}: </b><br/><Userlist activeUsers={this.state.users}/>
+                    <p style={{fontSize: '1.3em'}}>{this.props.channel}</p><Userlist activeUsers={this.state.users}/>
                     <br/><br/>
                     <textarea id={this.props.id} rows="15" cols="150"
                               placeholder={"Write here..."}

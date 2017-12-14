@@ -53,7 +53,7 @@ class TabSystem extends Component {
                         {/*<label style={{margin: '2%'}}>Join a channel or add a new one:</label><br/>*/}
                         <input type="text" placeholder={"Channel name..."} value={this.state.newChannelName}
                                onChange={this.handleTypeChannelName}/><br/>
-                        <button className="btn-success" style={{margin: '2%'}} type="submit"
+                        <button className="btn btn-success" style={{margin: '2%'}} type="submit"
                                 onClick={this.addNewChannel}>
                             Go!
                         </button>
@@ -71,7 +71,7 @@ class TabSystem extends Component {
 
 const TabListGenerator = props => (
     <TabList className="tabi">
-        <Tab className="btn btn-warning" tabFor={props.number.toString()}>
+        <Tab className="btn btn-secondary" tabFor={props.number.toString()}>
             {props.name}
         </Tab>
     </TabList>
