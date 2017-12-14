@@ -277,13 +277,13 @@ class Editor extends React.Component {
                               onCut={this.onCut}
                               value={this.state.content}
                     />
-                    <FileSaver editorId={this.props.id}
-                               filename={this.state.filename}
-                               changeNameCallback={this.sendName}/>
                     <img id="copyToClipboardIcon"
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
                          alt="save to clipboard"
                          onClick={this.copyToClipboard}/>
+                    <FileSaver editorId={this.props.id}
+                               filename={this.state.filename}
+                               changeNameCallback={this.sendName}/>
                     {/*</fieldset>*/}
                 </form>
             </div>

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Tab, TabPanel, TabList} from 'react-web-tabs';
 import Editor from './Editor';
-import Logo from'./codelive_logo.png';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './NewTab.css';
 
@@ -44,11 +43,11 @@ class TabSystem extends Component {
 
         return (
             <div>
-                <div class="row">
-                    <div class="col-sm-4">{children}<br/></div>
-                    <div class="col-sm-4"><h1>CodeLive</h1></div>
+                <div className="row">
+                    <div className="col-sm-4">{children}<br/></div>
+                    <div className="col-sm-4"><h1>CodeLive</h1></div>
                         {/*<br/><img src={Logo} alt="logo"/>*/}
-                    <div class="col-sm-4">
+                    <div className="col-sm-4">
                         {/*<label style={{margin: '2%'}}>Join a channel or add a new one:</label><br/>*/}
                         <input type="text" placeholder={"Channel name..."} value={this.state.newChannelName}
                                onChange={this.handleTypeChannelName}/>
