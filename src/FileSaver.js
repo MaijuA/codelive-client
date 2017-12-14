@@ -9,7 +9,10 @@ class FileSaver extends React.Component {
         kanavatunnus: this.props.channelName
     };
 
-    tallennaKantaan = (event) => {
+    saveToDatabase = (event) => {
+        event.preventDefault();
+        this.props.saveToDatabaseCallback();
+        /*
         // Kerrotaan Reactille, että halutaan itse käsitellä tapahtuma
         event.preventDefault();
 
@@ -23,6 +26,7 @@ class FileSaver extends React.Component {
         // window.location.replace(URL);
         // window.location.href = "URL";
         // window.open(URL,"_self")
+        */
     }
 
     componentWillReceiveProps(nextProps) {
@@ -61,7 +65,7 @@ class FileSaver extends React.Component {
                        onChange={this.filenameOnChange}
                        onBlur={this.filenameOnBlur}/>
 
-                <button style={{margin: '2%'}} className="btn-db" id="save_btn_db" onClick={this.tallennaKantaan}>Save to database</button>
+                <button style={{margin: '2%'}} className="btn-db" id="save_btn_db" onClick={this.saveToDatabase}>Save to database</button>
             </div>
         )
     }

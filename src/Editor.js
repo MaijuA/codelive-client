@@ -5,7 +5,6 @@ import Userlist from './Userlist';
 import Beforeunload from 'react-beforeunload';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-
 /*
  Created by Jari Haavisto
  Editor-komponentti pitää sisällään kaiken perustoiminnallisuuden:
@@ -200,6 +199,7 @@ class Editor extends React.Component {
      argumenttina annetulle kanavalle.
      */
     joinChannel = (channel) => {
+        console.log("Joining channel");
         this.leaveChannel();
         this.channel = channel;
         var headers = {username: this.props.username};
@@ -258,10 +258,32 @@ class Editor extends React.Component {
         document.execCommand('copy');
     };
 
+    /*
+    Funktio saveToDatabase on callback-funktio FileSaver-komponentille, joka lähettää
+    palvelimelle käskyn tallettaa tällä hetkellä muistissa oleva kanavatieto
+    tietokantaan.
+     */
+    saveToDatabase = () => {
+        this.stompClient.send("/send/" + this.channel + ".save", {}, JSON.stringify({}));
+    };
+
+    /*
+    Sulkeaksemme editori-ikkunan, kutsutaan callback-funktiota parametrilla kanavan nimi.
+     */
+    closeEditorCallback = () => {
+        this.props.closeEditorCallback(this.props.channel);
+    };
+
+
+
     render() {
         return (
             <div className="container" style={{background: '#f4f4f4'}}>
-                <form>
+                <form><img name="window-close"
+                                   id="closeEditorIcon"
+                                   src="https://png.icons8.com/small/540/close-window.png"
+                                   alt="close editor"
+                                   onClick={this.closeEditorCallback}/>
                     <br/>
                     <Beforeunload onBeforeunload={this.leaveChannel}/>
                     <b>{this.props.channel}: </b><br/><Userlist activeUsers={this.state.users}/>
@@ -281,7 +303,8 @@ class Editor extends React.Component {
                          onClick={this.copyToClipboard}/>
                     <FileSaver editorId={this.props.id}
                                filename={this.state.filename}
-                               changeNameCallback={this.sendName}/>
+                               changeNameCallback={this.sendName}
+                               saveToDatabaseCallback={this.saveToDatabase} />
                     <br/><br/>
                 </form>
             </div>
