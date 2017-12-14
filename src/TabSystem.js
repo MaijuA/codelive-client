@@ -69,8 +69,6 @@ class TabSystem extends Component {
             children2.push(<this.ChildComponent key={i} number={i}
                                            username={this.props.username}
                                            channel={this.state.channelNames[i]}/>);
-            console.log("RENDER");
-            console.log(children2);
         }
 
         return (
@@ -90,9 +88,7 @@ class TabSystem extends Component {
                     </div>
                 </div>
                 <br/>
-
                 {children2}
-
             </div>
         );
     }

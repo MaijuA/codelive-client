@@ -35,6 +35,7 @@ class Editor extends React.Component {
     };
 
     componentWillUnmount = () => {
+        console.log("componentWillUnmount");
         this.leaveChannel();
     }
 
@@ -213,6 +214,7 @@ class Editor extends React.Component {
      siltä kanavalta, jolle se on sillä hetkellä liitetty.
      */
     leaveChannel = () => {
+        console.log("leaveChannel executed: " + this.channel);
         if (!this.subscription) return;
         this.stompClient.send("/send/" + this.channel + ".leave", {},
             JSON.stringify({content: this.props.username}));
@@ -274,9 +276,15 @@ class Editor extends React.Component {
         this.props.closeEditorCallback(this.props.channel);
     };
 
+    foo = () => {
+        console.log("closing editor from beforeunload");
+        this.leaveChannel();
+    }
+
 
 
     render() {
+        console.log("Rendering editor " + this.props.channel);
         return (
             <div className="container" style={{background: '#f4f4f4'}}>
                 <form><img name="window-close"
@@ -285,7 +293,7 @@ class Editor extends React.Component {
                                    alt="close editor"
                                    onClick={this.closeEditorCallback}/>
                     <br/>
-                    <Beforeunload onBeforeunload={this.leaveChannel}/>
+                    <Beforeunload onBeforeunload={this.foo}/>
                     {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
                     {/*<fieldset className="form-group">*/}
                     <p style={{fontSize: '1.3em'}}>{this.props.channel}</p><Userlist activeUsers={this.state.users}/>
