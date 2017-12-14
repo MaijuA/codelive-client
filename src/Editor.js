@@ -83,7 +83,6 @@ class Editor extends React.Component {
      on sisältö (content), joka liitetään osaksi olemassaolevaa tekstiä. Lisäksi viestissä
      tulee olla alkukoordinaatti (startPos) ja loppukoordinaatti(endPos), jotka kertovat,
      mihibn kohtaan olemassaolevaa tekstiä muutos tehdään.
-
      DELTA-tyyppisellä viestillä hoidetaan yksittäisten kirjainten lisääminen ja poistaminen,
      sekä tekstipätkien leikkaaminen (cut) ja liittäminen (paste).
      */
@@ -99,7 +98,6 @@ class Editor extends React.Component {
     /*
      Funktio sendName lähettää tyyppiä NAME olevan viestin. Tämänmuotoisessa viestissä
      on tyypin lisäksi ainoastaan tiedostonimi (filename).
-
      NAME-tyyppisellä viestillä hoidetaan tiedostonimen muutos.
      */
     sendName = (filename) => {
@@ -288,10 +286,10 @@ class Editor extends React.Component {
         return (
             <div className="container" style={{background: '#f4f4f4'}}>
                 <form><img name="window-close"
-                                   id="closeEditorIcon"
-                                   src="https://png.icons8.com/small/540/close-window.png"
-                                   alt="close editor"
-                                   onClick={this.closeEditorCallback}/>
+                           id="closeEditorIcon"
+                           src="https://png.icons8.com/small/540/close-window.png"
+                           alt="close editor"
+                           onClick={this.closeEditorCallback}/>
                     <br/>
                     <Beforeunload onBeforeunload={this.foo}/>
                     {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
