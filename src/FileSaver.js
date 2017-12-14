@@ -9,20 +9,30 @@ class FileSaver extends React.Component {
         kanavatunnus: this.props.channelName
     };
 
+    // stompClient = null;
+
     tallennaKantaan = (event) => {
         // Kerrotaan Reactille, että halutaan itse käsitellä tapahtuma
         event.preventDefault();
+this.props.saveToDatabaseCallback();
+/*
+        this.stompClient.send("/send/" + this.kanavatunnus + ".save", {},
+            JSON.stringify({}));
+*/
 
+/*
         var kirjoituKanava = this.state.kanavatunnus.toString();
         console.log("Kanavatunnus on: " + this.state.kanavatunnus);
 
         var URL = "tallenna/" + kirjoituKanava;
         console.log("Tallennuspolku tietokantaan on: " + URL);
 
-        window.location.assign(URL)
+
+        // window.location.assign(URL)
         // window.location.replace(URL);
         // window.location.href = "URL";
         // window.open(URL,"_self")
+*/
     }
 
     componentWillReceiveProps(nextProps) {

@@ -258,6 +258,11 @@ class Editor extends React.Component {
         document.execCommand('copy');
     };
 
+    saveToDatabase = (event) => {
+        this.stompClient.send("/send/" + this.props.channel + ".save", {},
+            JSON.stringify({}));
+    }
+
     render() {
         return (
             <div className="container" style={{background: '#92A78C'}}>
@@ -280,6 +285,7 @@ class Editor extends React.Component {
                     <FileSaver editorId={this.props.id}
                                filename={this.state.filename}
                                channelName={this.props.channel}
+                               saveToDatabaseCallback={this.saveToDatabase}
                                changeNameCallback={this.sendName}/>
                     <img id="copyToClipboardIcon"
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
