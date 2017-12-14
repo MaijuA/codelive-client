@@ -273,15 +273,16 @@ class Editor extends React.Component {
     };
 
 
-
     render() {
         return (
             <div className="container" style={{background: '#f4f4f4'}}>
-                <form><img name="window-close"
+                <form><img style={{float: 'right', marginTop: '2%'}}
+                           name="window-close"
                            id="closeEditorIcon"
                            src="https://png.icons8.com/small/540/close-window.png"
                            alt="close editor"
                            onClick={this.closeEditorCallback}/>
+                    <br/>
                     <br/>
                     <Beforeunload onBeforeunload={this.leaveChannel}/>
                     {/*<Channel channelId={this.props.id + "_channel"} callback={this.joinChannel}/>*/}
@@ -297,14 +298,15 @@ class Editor extends React.Component {
                               onCut={this.onCut}
                               value={this.state.content}
                     /><br/>
+
+                    <FileSaver editorId={this.props.id}
+                               filename={this.state.filename}
+                               changeNameCallback={this.sendName}
+                               saveToDatabaseCallback={this.saveToDatabase}/>
                     <img id="copyToClipboardIcon"
                          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-clippy.svg"
                          alt="save to clipboard"
                          onClick={this.copyToClipboard}/>
-                    <FileSaver editorId={this.props.id}
-                               filename={this.state.filename}
-                               changeNameCallback={this.sendName}
-                               saveToDatabaseCallback={this.saveToDatabase} />
                     <br/><br/>
                 </form>
             </div>
