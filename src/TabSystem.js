@@ -9,34 +9,42 @@ import './NewTab.css';
  */
 class TabSystem extends Component {
 
-    componentWillReceiveProps(newProps) {
-        if (newProps.openChannels) this.setState({channelNames: newProps.openChannels});
-    }
-
     state = {
         newChannelName: '',
-        channelNames: this.props.openChannels
+        channelNameList: this.props.openChannels
     };
+
+    componentWillReceiveProps(newProps) {
+        if (!newProps.openChannels) return;
+
+        var tabList = [];
+        var tabPanelList = [];
+        var channelNameList = [];
+
+        for (var i = 0; i < newProps.openChannels.length; i += 1) {
+            tabList.push(<TabListGenerator key={i} number={i} name={newProps.openChannels[i]}/>);
+            tabPanelList.push(<this.ChildComponent key={i} number={i}
+                                                   username={this.props.username}
+                                                   channel={newProps.openChannels[i]}/>);
+            channelNameList.push(newProps.openChannels[i]);
+            console.log("new open channels " + newProps.openChannels[i]);
+        }
+        this.setState({tabList: tabList, tabPanelList: tabPanelList, channelNameList: channelNameList});
+    }
 
     handleTypeChannelName = (event) => {
         this.setState({newChannelName: event.target.value});
     };
 
     addNewChannel = () => {
-        this.setState({
-            //numChildren: this.state.numChildren + 1,
-            channelNames: this.state.channelNames.concat(this.state.newChannelName),
-            newChannelName: ''
-        });
+        var channelNameList = this.state.channelNameList.concat(this.state.newChannelName);
+        this.setState({channelNameList: channelNameList, newChannelName: ''})
     };
 
     closeEditor = (channel) => {
-        console.log("CLOSE EDITOR FUNCTION " + channel);
-        var channelList = this.state.channelNames;
-        console.log(channelList);
+        var channelList = this.state.channelNameList;
         channelList = channelList.filter(c => c !== channel);
-        console.log(channelList);
-        this.setState({channelNames: channelList});
+        this.setState({channelNameList: channelList});
     };
 
     tabPanelGenerator = (i) => {
@@ -44,7 +52,7 @@ class TabSystem extends Component {
             <TabPanel tabId={i}>
                 <Editor id={"editor_" + i}
                         username={this.props.username}
-                        channel={this.state.channelNames[i]}
+                        channel={this.state.channelNameList[i]}
                         closeEditorCallback={this.closeEditor}
                 />
             </TabPanel>
@@ -64,17 +72,21 @@ class TabSystem extends Component {
     render() {
         const children = [];
         const children2 = [];
-        for (var i = 0; i < this.state.channelNames.length; i += 1) {
-            children.push(<TabListGenerator key={i} number={i} name={this.state.channelNames[i]}/>);
+        for (var i = 0; i < this.state.channelNameList.length; i += 1) {
+            children.push(<TabListGenerator key={i} number={i} name={this.state.channelNameList[i]}/>);
             children2.push(<this.ChildComponent key={i} number={i}
-                                           username={this.props.username}
-                                           channel={this.state.channelNames[i]}/>);
+                                                username={this.props.username}
+                                                channel={this.state.channelNameList[i]}/>);
         }
 
         return (
             <div>
                 <div className="row">
-                    <div className="col-sm-4">{children}<br/></div>
+                    {/*<div className="col-sm-4">{children}<br/></div>*/}
+
+                    <div className="col-sm-4">
+                        {this.state.channelNameList.map((elem, i) => <TabListGenerator key={i} number={i} name={elem}/>)}
+                    </div>
                     <div className="col-sm-4"><h1>CodeLive</h1></div>
                     {/*<br/><img src={Logo} alt="logo"/>*/}
                     <div className="col-sm-4">
@@ -88,7 +100,10 @@ class TabSystem extends Component {
                     </div>
                 </div>
                 <br/>
-                {children2}
+                {this.state.channelNameList.map((elem, i) => <this.ChildComponent key={i} number={i}
+                                                                                  username={this.props.username}
+                                                                                  channel={elem}/>)}
+                {/*{children2}*/}
             </div>
         );
     }
@@ -102,7 +117,7 @@ const TabListGenerator = props => (
         </Tab>
     </TabList>
 );
-
+/*
 const ChildComponent = props =>
     <TabPanel tabId={props.number.toString()}>
         <Editor id={"editor_" + props.number}
@@ -111,5 +126,6 @@ const ChildComponent = props =>
                 closeEditorCallback={this.closeEditor}
         />
     </TabPanel>
+    */
 
 export default TabSystem;

@@ -34,8 +34,9 @@ class Editor extends React.Component {
 
     };
 
-    componentWillUnmount = () => {
+    componentWillUnmount = (event) => {
         console.log("componentWillUnmount");
+        console.log(event);
         this.leaveChannel();
     }
 
