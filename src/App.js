@@ -37,6 +37,8 @@ class App extends Component {
                 openChannels: channelsArray
             });
             document.body.style.backgroundColor = "white";
+        } else {
+            document.getElementById("error").innerHTML = "Username or channels can't be empty!";
         }
     }
 
@@ -61,27 +63,31 @@ class App extends Component {
                             <label>CHANNELS:</label>
                             <input className="form-control" id="channelList"/>
                             <i>You can add existing channels or new ones: (channel1, channel2, ...)</i>
-                            <br></br><br></br>
-                            <button type="submit" className="btn btn-success" onClick={ () => this.handleClick() }>Start!</button>
+                            <br/><div style={{color: 'red'}} id="error"></div><br/>
+
+                            <button type="submit" className="btn btn-success" onClick={() => this.handleClick()}>
+                                Start!
+                            </button>
                         </div>
                     </center>
                 </ToggleDisplay>
 
                 <ToggleDisplay show={this.state.show}>
-                     {/*<Tabs*/}
-                        {/*defaultTab="0"*/}
-                        {/*onChange={(tabId) => {*/}
-                            {/*console.log(tabId)*/}
-                        {/*}}>*/}
-                    <Tabs defaultTab="0" onChange={(tabId) => {}}>
+                    {/*<Tabs*/}
+                    {/*defaultTab="0"*/}
+                    {/*onChange={(tabId) => {*/}
+                    {/*console.log(tabId)*/}
+                    {/*}}>*/}
+                    <Tabs defaultTab="0" onChange={(tabId) => {
+                    }}>
                         <center>
 
                             <br/>
 
-                            <TabSystem username={this.state.username} openChannels={this.state.openChannels} />
+                            <TabSystem username={this.state.username} openChannels={this.state.openChannels}/>
                         </center>
 
-                   </Tabs>
+                    </Tabs>
 
                 </ToggleDisplay>
 

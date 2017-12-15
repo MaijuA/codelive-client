@@ -95,7 +95,7 @@ class TabSystem extends Component {
                                onChange={this.handleTypeChannelName}/><br/>
                         <button className="btn btn-success" style={{margin: '2%'}} type="submit"
                                 onClick={this.addNewChannel}>
-                            Go!
+                            Add
                         </button>
                     </div>
                 </div>
